@@ -104,7 +104,7 @@ deploy:
   type: ''
 
 giscus:
-  enable: true
+  enable: false
   repo: kylin1020/hexo-blog-comment
   repo_id: R_kgDOLhMldA
   category: General
