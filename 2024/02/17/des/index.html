@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="记录编程生活" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>des算法理解及代码实现 |  Sullivan Blog</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-des"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  des算法理解及代码实现
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/02/17/des/" class="article-date">
+  <time datetime="2024-02-17T02:52:29.000Z" itemprop="datePublished">2024-02-17</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">11 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h3 id="DES算法介绍"><a href="#DES算法介绍" class="headerlink" title="DES算法介绍"></a>DES算法介绍</h3><p>DES（Data Encrytion Standard）算法是由IBM在上世纪70年代开发的一种分组加密算法.</p>
+<h3 id="加密流程"><a href="#加密流程" class="headerlink" title="加密流程"></a>加密流程</h3><p>明文和密钥的长度都是64位，其中密钥每隔8位被设置为奇偶校验位，不参与实际加密流程，因此密钥长度为56位。<br>分为以下几个步骤:</p>
+<ol>
+<li>将明文M进行初始置换IP得到M’</li>
+<li>根据密钥生成16组子密钥Ki</li>
+<li>进行16次迭代过程得到密文C</li>
+<li>将密文C进行逆置换IP-1得到最终密文</li>
+</ol>
+<p>流程图:<br><img src="/images/des1.png" alt="DES加密流程"></p>
+<h4 id="初始置换"><a href="#初始置换" class="headerlink" title="初始置换"></a>初始置换</h4><p>将原始明文M根据IP置换表进行初始置换，得到M’.<br>IP置换表如下:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">58, 50, 42, 34, 26, 18, 10, 2,</span><br><span class="line">60, 52, 44, 36, 28, 20, 12, 4,</span><br><span class="line">62, 54, 46, 38, 30, 22, 14, 6,</span><br><span class="line">64, 56, 48, 40, 32, 24, 16, 8,</span><br><span class="line">57, 49, 41, 33, 25, 17, 9,  1,</span><br><span class="line">59, 51, 43, 35, 27, 19, 11, 3,</span><br><span class="line">61, 53, 45, 37, 29, 21, 13, 5,</span><br><span class="line">63, 55, 47, 39, 31, 23, 15, 7</span><br></pre></td></tr></table></figure>
+
+<p>置换表中的数值表示该位在原始明文中的位置，例如58表示第一个数值取原始明文的第58位。</p>
+<p>示例代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IP置换表</span></span><br><span class="line"><span class="type">int</span> IP[<span class="number">64</span>] = &#123;</span><br><span class="line">        <span class="number">58</span>, <span class="number">50</span>, <span class="number">42</span>, <span class="number">34</span>, <span class="number">26</span>, <span class="number">18</span>, <span class="number">10</span>, <span class="number">2</span>,</span><br><span class="line">        <span class="number">60</span>, <span class="number">52</span>, <span class="number">44</span>, <span class="number">36</span>, <span class="number">28</span>, <span class="number">20</span>, <span class="number">12</span>, <span class="number">4</span>,</span><br><span class="line">        <span class="number">62</span>, <span class="number">54</span>, <span class="number">46</span>, <span class="number">38</span>, <span class="number">30</span>, <span class="number">22</span>, <span class="number">14</span>, <span class="number">6</span>,</span><br><span class="line">        <span class="number">64</span>, <span class="number">56</span>, <span class="number">48</span>, <span class="number">40</span>, <span class="number">32</span>, <span class="number">24</span>, <span class="number">16</span>, <span class="number">8</span>,</span><br><span class="line">        <span class="number">57</span>, <span class="number">49</span>, <span class="number">41</span>, <span class="number">33</span>, <span class="number">25</span>, <span class="number">17</span>, <span class="number">9</span>,  <span class="number">1</span>,</span><br><span class="line">        <span class="number">59</span>, <span class="number">51</span>, <span class="number">43</span>, <span class="number">35</span>, <span class="number">27</span>, <span class="number">19</span>, <span class="number">11</span>, <span class="number">3</span>,</span><br><span class="line">        <span class="number">61</span>, <span class="number">53</span>, <span class="number">45</span>, <span class="number">37</span>, <span class="number">29</span>, <span class="number">21</span>, <span class="number">13</span>, <span class="number">5</span>,</span><br><span class="line">        <span class="number">63</span>, <span class="number">55</span>, <span class="number">47</span>, <span class="number">39</span>, <span class="number">31</span>, <span class="number">23</span>, <span class="number">15</span>, <span class="number">7</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按照置换表规则置换布尔数组</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">permutation</span><span class="params">(<span class="type">const</span> <span class="type">bool</span>* bits, <span class="type">bool</span> *output, <span class="type">const</span> <span class="type">int</span>* table, <span class="type">int</span> length)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">        <span class="comment">// 下标从0开始</span></span><br><span class="line">        output[i] = bits[table[i] - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">encrypt_block</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* plaintext, <span class="type">const</span> <span class="type">char</span>* key, <span class="type">bool</span>* result)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其余代码...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// IP置换</span></span><br><span class="line">    <span class="type">bool</span> plaintext_ip_block[<span class="number">64</span>];</span><br><span class="line">    permutation(plaintext_bits, plaintext_ip_block, IP, <span class="number">64</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成子密钥"><a href="#生成子密钥" class="headerlink" title="生成子密钥"></a>生成子密钥</h4><p>大致流程图如下:<br><img src="/images/des%E5%AD%90%E5%AF%86%E9%92%A5%E7%94%9F%E6%88%90.png" alt="DES生成子密钥"></p>
+<p>PC-1置换表如下:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">57, 49, 41, 33, 25, 17, 9,</span><br><span class="line"> 1, 58, 50, 42, 34, 26, 18,</span><br><span class="line">10,  2, 59, 51, 43, 35, 27,</span><br><span class="line">19, 11,  3, 60, 52, 44, 36,</span><br><span class="line">63, 55, 47, 39, 31, 23, 15,</span><br><span class="line"> 7, 62, 54, 46, 38, 30, 22,</span><br><span class="line">14,  6, 61, 53, 45, 37, 29,</span><br><span class="line">21, 13,  5, 28, 20, 12,  4</span><br></pre></td></tr></table></figure>
+
+<p>将密钥K进行根据PC-1置换表进行置换, 得到56位的密钥K’.将K’分为两部分，前28位为C0，后28位为D0。分别将C0和D0进行循环左移指定次数， 得到C1和D1. 然后将C1和D1合并后进行根据PC-2置换表进行置换， 得到48位子密钥K1. 接着对C1和D1进行循环左移指定次数， 得到C2和D2. 然后将C2和D2合并后进行置换PC-2， 得到48位子密钥K2.如此循环16次得到Kn(16个子密钥)。<br>其中每轮循环左移查表为:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 1 2 2 2 2 2 2 1 2 2 2 2 2 2 1</span><br></pre></td></tr></table></figure>
+<p>即第1, 2, 9, 16循环左移一次，其余循环左移两次。</p>
+<p>PC-2置换表如下:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">14, 17, 11, 24,  1,  5,</span><br><span class="line"> 3, 28, 15,  6, 21, 10,</span><br><span class="line">23, 19, 12,  4, 26,  8,</span><br><span class="line">16,  7, 27, 20, 13,  2,</span><br><span class="line">41, 52, 31, 37, 47, 55,</span><br><span class="line">30, 40, 51, 45, 33, 48,</span><br><span class="line">44, 49, 39, 56, 34, 53,</span><br><span class="line">46, 42, 50, 36, 29, 32</span><br></pre></td></tr></table></figure>
+<p>与该置换表进行置换之后去除了9， 18， 22， 25， 35， 38， 43， 54这几个位置的值，将56位的密钥变为了48位。<br>生成子密钥的代码示例如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 循环左移指定次数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">left_shift</span><span class="params">(<span class="type">bool</span>* bits, <span class="type">int</span> bit_length,  <span class="type">int</span> num)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; num; i++) &#123;</span><br><span class="line">        <span class="type">bool</span> tmp = bits[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; bit_length - <span class="number">1</span>; j++) &#123;</span><br><span class="line">            bits[j] = bits[j + <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        bits[bit_length - <span class="number">1</span>] = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">generate_sub_keys</span><span class="params">(<span class="type">bool</span>* keys, <span class="type">bool</span> sub_keys[<span class="number">16</span>][<span class="number">48</span>])</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// PC-1置换</span></span><br><span class="line">    <span class="type">bool</span> pc_1_bits[<span class="number">56</span>];</span><br><span class="line">    permutation(keys, pc_1_bits, PC_1, <span class="number">56</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分为两组</span></span><br><span class="line">    <span class="type">bool</span> left[<span class="number">28</span>];</span><br><span class="line">    <span class="type">bool</span> right[<span class="number">28</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">28</span>; i++) &#123;</span><br><span class="line">        left[i] = pc_1_bits[i];</span><br><span class="line">        right[i] = pc_1_bits[i + <span class="number">28</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 生成16个子密钥</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 循环左移</span></span><br><span class="line">        <span class="type">int</span> times = LEFT_SHIFT[i];</span><br><span class="line">        left_shift(left, <span class="number">28</span>, times);</span><br><span class="line">        left_shift(right, <span class="number">28</span>, times);</span><br><span class="line">        <span class="type">bool</span> tmp[<span class="number">56</span>];</span><br><span class="line">        <span class="comment">// 拼接</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">28</span>; j++) &#123;</span><br><span class="line">            tmp[j] = left[j];</span><br><span class="line">            tmp[j + <span class="number">28</span>] = right[j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// PC-2置换</span></span><br><span class="line">        permutation(tmp, sub_keys[i], PC_2, <span class="number">48</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h4><p>将经过初始置换的密文M’分为两部分, 前32位为L0, 后32位为R0。对R0进行f轮函数运算之后与L0异或，得到R1, 并将R0变为L1, 重复此过程16次。<br>其中f轮函数的操作如下:<br>将32位的R_n经过扩展置换变更为48位, 然后与子密钥K_n进行异或运算得到48位的输出, 将该输出进行S盒替代得到32位输出, 然后经过P盒置换得到32位输出。</p>
+<h5 id="迭代过程公式"><a href="#迭代过程公式" class="headerlink" title="迭代过程公式:"></a>迭代过程公式:</h5><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">L_n = R_(n-1)</span><br><span class="line">R_n = L_(n-1) XOR f(R_(n-1), K_n)</span><br></pre></td></tr></table></figure>
+
+<h5 id="S盒替代"><a href="#S盒替代" class="headerlink" title="S盒替代"></a>S盒替代</h5><p>将48位的输入拆分为8组6位，每组6位进行S盒替代，得到32位输出。<br>对于每组6位的输入, 取第一位和第6位组成二进制数, 得到对应的十进制行row, 再取第二位, 第三位, 第四位和第五位组成二进制数，得到对应的十进制列col，根据得到<br>的行和列，从S盒中取出对应的值。</p>
+<p>每组S盒有4行16列，对应的值如下表所示:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">S1:</span><br><span class="line">&#123; 14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7 &#125;,</span><br><span class="line">&#123; 0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8 &#125;,</span><br><span class="line">&#123; 4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0 &#125;,</span><br><span class="line">&#123; 15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13 &#125;</span><br><span class="line"></span><br><span class="line">S2:</span><br><span class="line">&#123; 15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10 &#125;,</span><br><span class="line">&#123; 3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5 &#125;,</span><br><span class="line">&#123; 0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15 &#125;,</span><br><span class="line">&#123; 13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9 &#125;</span><br><span class="line"></span><br><span class="line">S3:</span><br><span class="line">&#123; 10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8 &#125;,</span><br><span class="line">&#123; 13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1 &#125;,</span><br><span class="line">&#123; 13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7 &#125;,</span><br><span class="line">&#123; 1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12 &#125;</span><br><span class="line"></span><br><span class="line">S4:</span><br><span class="line">&#123; 7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15 &#125;,</span><br><span class="line">&#123; 13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9 &#125;,</span><br><span class="line">&#123; 10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4 &#125;,</span><br><span class="line">&#123; 3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14 &#125;</span><br><span class="line"></span><br><span class="line">S5:</span><br><span class="line">&#123; 2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9 &#125;,</span><br><span class="line">&#123; 14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6 &#125;,</span><br><span class="line">&#123; 4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14 &#125;,</span><br><span class="line">&#123; 11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3 &#125;</span><br><span class="line"></span><br><span class="line">S6:</span><br><span class="line">&#123; 12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11 &#125;,</span><br><span class="line">&#123; 10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8 &#125;,</span><br><span class="line">&#123; 9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6 &#125;,</span><br><span class="line">&#123; 4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13 &#125;</span><br><span class="line"></span><br><span class="line">S7:</span><br><span class="line">&#123; 4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1 &#125;,</span><br><span class="line">&#123; 13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6 &#125;,</span><br><span class="line">&#123; 1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2 &#125;,</span><br><span class="line">&#123; 6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12 &#125;</span><br><span class="line"></span><br><span class="line">S8:</span><br><span class="line">&#123; 13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7 &#125;,</span><br><span class="line">&#123; 1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2 &#125;,</span><br><span class="line">&#123; 7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8 &#125;,</span><br><span class="line">&#123; 2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11 &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>轮函数示例代码如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// f轮函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">feistel</span><span class="params">(<span class="type">bool</span>* right, <span class="type">const</span> <span class="type">bool</span>* sub_key, <span class="type">bool</span>* output)</span> &#123;</span><br><span class="line">    <span class="comment">// E置换</span></span><br><span class="line">    <span class="type">bool</span> right_e[<span class="number">48</span>];</span><br><span class="line">    permutation(right, right_e, E, <span class="number">48</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 与子密钥异或</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">48</span>; i++) &#123;</span><br><span class="line">        right_e[i] = right_e[i] ^ sub_key[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// S盒替换</span></span><br><span class="line">    <span class="type">bool</span> Bn[<span class="number">32</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) &#123;</span><br><span class="line">        <span class="type">int</span> pos = i * <span class="number">6</span>;</span><br><span class="line">        <span class="type">int</span> row = right_e[pos] * <span class="number">2</span> + right_e[pos + <span class="number">5</span>];</span><br><span class="line">        <span class="type">int</span> col = right_e[pos + <span class="number">1</span>] * <span class="number">8</span> + right_e[pos + <span class="number">2</span>] * <span class="number">4</span> + right_e[pos + <span class="number">3</span>] * <span class="number">2</span> + right_e[pos + <span class="number">4</span>];</span><br><span class="line">        <span class="type">int</span> value = SBOX[i][row][col];</span><br><span class="line">        Bn[pos] = (<span class="type">bool</span>) (value &amp; <span class="number">8</span>) &gt;&gt; <span class="number">3</span>;</span><br><span class="line">        Bn[pos + <span class="number">1</span>] = (<span class="type">bool</span>) (value &amp; <span class="number">4</span>) &gt;&gt; <span class="number">2</span>;</span><br><span class="line">        Bn[pos + <span class="number">2</span>] = (<span class="type">bool</span>) (value &amp; <span class="number">2</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        Bn[pos + <span class="number">3</span>] = (<span class="type">bool</span>) value &amp; <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// P置换</span></span><br><span class="line">    permutation(Bn, output, P, <span class="number">32</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">encrypt_block</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* plaintext, <span class="type">const</span> <span class="type">char</span>* key, <span class="type">bool</span>* result)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 其余代码...</span></span><br><span class="line">    </span><br><span class="line">        <span class="comment">// IP初始置换</span></span><br><span class="line">    <span class="type">bool</span> plaintext_ip_block[<span class="number">64</span>];</span><br><span class="line">    permutation(plaintext_bits, plaintext_ip_block, IP, <span class="number">64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">bool</span> L[<span class="number">32</span>];</span><br><span class="line">    <span class="type">bool</span> R[<span class="number">32</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">        L[i] = plaintext_ip_block[i];</span><br><span class="line">        R[i] = plaintext_ip_block[i + <span class="number">32</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">bool</span> output[<span class="number">32</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 16轮f轮函数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp; sub_key : sub_keys) &#123;</span><br><span class="line">        feistel(R, sub_key, output);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// L_n与F(R_n)异或并将R_n赋值给L_n+1</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; <span class="number">32</span>; j++) &#123;</span><br><span class="line">            output[j] = output[j] ^ L[j];</span><br><span class="line">            L[j] = R[j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 合并L和R</span></span><br><span class="line">    <span class="type">bool</span> lr[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">32</span>; i++) &#123;</span><br><span class="line">        lr[i] = L[i];</span><br><span class="line">        lr[i + <span class="number">32</span>] = R[i];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// IP逆置换</span></span><br><span class="line">    permutation(lr, result, FP, <span class="number">64</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sullivan.nextcodings.com/2024/02/17/des/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DES%E7%AE%97%E6%B3%95/" rel="tag">DES算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2022-2024
+        <i class="ri-heart-fill heart_icon"></i> Sullivan Yang
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Sullivan Blog"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+</body>
+
+</html>
