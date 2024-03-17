@@ -69,7 +69,7 @@ void encrypt_block(const char* plaintext, const char* key, bool* result) {
 
 #### 生成子密钥
 大致流程图如下:
-![DES生成子密钥](images/des子密钥生成.png)
+![DES生成子密钥](images/des_sub_keys.png)
 
 PC-1置换表如下:
 ```text
