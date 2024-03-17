@@ -287,3 +287,4 @@ void encrypt_block(const char* plaintext, const char* key, bool* result) {
     permutation(lr, result, FP, 64);
 }
 ```
+

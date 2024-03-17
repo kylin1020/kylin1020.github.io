@@ -101,7 +101,9 @@ theme: ayer
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: 'git'
+  repo: https://github.com/kylin1020/sullivan-yang.github.io.git
+  branch: master
 
 giscus:
   enable: false
