@@ -63,9 +63,9 @@ setImmediate(find_RegisterNatives);
 ```
 
 #### 2. Frida获取指定方法的ArtMethod结构体地址后查找偏移
-查看frida源码得知对于某个类的某个函数(例如android/os/Process::getElapsedCpuTime, 有Java.use("android/os/Process").getElapsedCpuTime.handle), 都有一个handle属性, 该属性是通过env->GetStaticMethodID或者env->GetMethodID获取,
-在aosp中该methodID为ArtMethod结构体指针, 该结构体中的entry_point_from_jni_属性是该方法的入口指针地址, 根据该指针地址可以得到所属SO模块和在SO模块中的偏移.
-由于AOSP每个版本的ArtMethod结构体entry_point_from_jni_属性偏移可能不同, 因此需要通过计算得到, 思路是查找一个已知Native方法是由哪个SO模块中的某个方法实现的, 然后计算其在SO模块中的偏移, 代码参考自frida-java-bridge的_getArtMethodSpec方法: https://github.com/frida/frida-java-bridge/blob/1e23abb71fd26726d59627e4da3ad8e10ba849aa/lib/android.js#L973
+查看frida源码得知对于某个类的某个函数, 都有一个handle属性(例如android/os/Process::getElapsedCpuTime, 有Java.use("android/os/Process").getElapsedCpuTime.handle), 这个handle属性是通过env->GetStaticMethodID或者env->GetMethodID获取,
+在aosp中methodID为ArtMethod结构体指针, ArtMethod结构体中的entry_point_from_jni_属性是方法的入口指针地址, 根据该指针地址可以得到所属SO模块和在SO模块中的偏移.
+由于AOSP每个版本的ArtMethod结构体entry_point_from_jni_属性的指针偏移地址可能不同, 因此需要通过计算得到, 思路是查找一个已知Native方法是由哪个SO模块中的某个方法实现的, 然后计算其在SO模块中的偏移, 代码参考自[frida-java-bridge](https://github.com/frida/frida-java-bridge)的[_getArtMethodSpec](https://github.com/frida/frida-java-bridge/blob/1e23abb71fd26726d59627e4da3ad8e10ba849aa/lib/android.js#L973)方法
 
 ```typescript
 function getJNICodeOffset() {
