@@ -151,6 +151,90 @@
     
     
     <article
+  id="post-js-env-check"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2024/js-env-check/"
+    >JS 环境检测点总结</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/js-env-check/" class="article-date">
+  <time datetime="2024-03-18T14:34:34.000Z" itemprop="datePublished">2024-03-18</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>关注开源指纹库: <a target="_blank" rel="noopener" href="https://github.com/fingerprintjs/fingerprintjs">fingerprintjs</a></p>
+<h4 id="window-matchMedia"><a href="#window-matchMedia" class="headerlink" title="window.matchMedia"></a>window.matchMedia</h4><p>window.matchMedia() 方法用于检测当前浏览器是否支持某种 CSS 指定的媒体查询。</p>
+<h4 id="canvas指纹"><a href="#canvas指纹" class="headerlink" title="canvas指纹"></a>canvas指纹</h4><p>相同的HTML5 Canvas元素绘制操作，在不同操作系统、不同浏览器上，产生的图片内容不完全相同。在图片格式上，不同浏览器使用了不同的图形处理引擎、不同的图片导出选项、不同的默认压缩级别等。在像素级别来看，操作系统各自使用了不同的设置和算法来进行抗锯齿和子像素渲染操作。即使相同的绘图操作，产生的图片数据的CRC检验也不相同。<br>示例代码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;mycanvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;mycanvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> ctx = canvas.<span class="title function_">getContext</span>(<span class="string">&quot;2d&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;qwertyuiop!@#$%^&amp;*()_+&#x27;</span></span><br><span class="line">ctx.<span class="property">textBaseline</span> = <span class="string">&#x27;top&#x27;</span></span><br><span class="line">ctx.<span class="property">font</span> = <span class="string">&#x27;14px \&#x27;Arial\&#x27;&#x27;</span></span><br><span class="line">ctx.<span class="property">textBaseline</span> = <span class="string">&#x27;tencent&#x27;</span></span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;#f60&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillRect</span>(<span class="number">125</span>, <span class="number">1</span>, <span class="number">62</span>, <span class="number">20</span>)</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;#069&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillText</span>(txt, <span class="number">2</span>, <span class="number">15</span>)</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;rgba(102, 204, 0, 0.7)&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillText</span>(txt, <span class="number">4</span>, <span class="number">17</span>);</span><br><span class="line"><span class="keyword">const</span> canvasData = canvas.<span class="title function_">toDataURL</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="webgl指纹"><a href="#webgl指纹" class="headerlink" title="webgl指纹"></a>webgl指纹</h4><ol>
+<li>WebGL报告——完整的WebGL浏览器报告表是可获取、可被检测的。通过读取报告中的vendor和renderer信息，可以获取到显卡的供应商和型号信息。</li>
+<li>WebGL图像——渲染和转换为哈希值的隐藏3D图像。由于最终结果取决于进行计算的硬件设备，因此此方法会为设备及其驱动程序的不同组合生成唯一值。这种方</li>
+</ol>
+<h4 id="ja3指纹"><a href="#ja3指纹" class="headerlink" title="ja3指纹"></a>ja3指纹</h4><p>Ja3指纹是一种用于识别和追踪SSL&#x2F;TLS加密流量的哈希值。它是通过计算客户端SSL&#x2F;TLS握手期间使用的加密协议参数，包括TLS版本和密码套件等得出的。Ja3指纹的长度为32个16进制数字符（64个字符），可以用于识别加密流量的来源，例如，某个应用程序，某个操作系统，某个设备或者一个独立的网络节点。</p>
+<h4 id="常规检测点"><a href="#常规检测点" class="headerlink" title="常规检测点"></a>常规检测点</h4><ol>
+<li>navigator.webdriver</li>
+<li>navigator.platform(Win32&#x2F;MacOSX&#x2F;Linux)</li>
+<li>navigator.userAgent</li>
+<li>window._phantom</li>
+<li>window.__nightmare</li>
+<li>window._selenium</li>
+<li>window.callPhantom</li>
+<li>window.callSelenium</li>
+<li>window._Selenium_IDE_Recorder</li>
+<li>window.document.__webdriver_evaluate</li>
+<li>window.document.__selenium_evaluate</li>
+<li>window.document.__webdriver_script_function</li>
+<li>window.document.__webdriver_script_func</li>
+<li>window.document.__webdriver_script_fn</li>
+<li>window.document.__fxdriver_evaluate</li>
+<li>window.document.__driver_unwrapped</li>
+<li>window.document.__webdriver_unwrapped</li>
+<li>window.document.__driver_evaluate</li>
+<li>window.document.__selenium_unwrapped</li>
+<li>window.document.__fxdriver_unwrapped</li>
+<li>window.document.documentElement.getAttribute(“selenium”)</li>
+<li>window.document.documentElement.getAttribute(“webdriver”)</li>
+<li>window.document.documentElement.getAttribute(“driver”)</li>
+</ol>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS%E9%80%86%E5%90%91/" rel="tag">JS逆向</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+   
+  
+</article>
+
+    
+    <article
   id="post-frida-find-native-method-address"
   class="article article-type-post"
   itemscope

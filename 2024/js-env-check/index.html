@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>归档: 2024 |  Sullivan Blog</title>
+      <title>JS 环境检测点总结 |  Sullivan Blog</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -54,136 +54,198 @@
       
     <main class="content on">
       <section class="outer">
-  
-  
-  <article class="articles">
+  <article
+  id="post-js-env-check"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">2024</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2024" class="archive-year">2024</a>
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  JS 环境检测点总结
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/js-env-check/" class="article-date">
+  <time datetime="2024-03-18T14:34:34.000Z" itemprop="datePublished">2024-03-18</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">584</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">2 分钟</span>
+        </span>
+    </span>
+</div>
+ 
     </div>
-    <div class="archives">
       
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/js-env-check/" class="archive-article-date">
-  <time datetime="2024-03-18T14:34:34.000Z" itemprop="datePublished">03/18</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/js-env-check/"
-    >JS 环境检测点总结</a> 
-</h2>
- 
+    <div class="tocbot"></div>
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/frida-find-native-method-address/" class="archive-article-date">
-  <time datetime="2024-03-18T03:53:19.000Z" itemprop="datePublished">03/18</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/frida-find-native-method-address/"
-    >Frida查找Native函数地址和所属SO模块的方法</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/md5/" class="archive-article-date">
-  <time datetime="2024-03-17T11:38:32.000Z" itemprop="datePublished">03/17</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/md5/"
-    >MD5算法步骤及代码复现</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/cbc-and-ecb/" class="archive-article-date">
-  <time datetime="2024-03-17T10:22:31.000Z" itemprop="datePublished">03/17</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/cbc-and-ecb/"
-    >分组加密算法, 加解密模式中的CBC和ECB模式</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
   
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/des/" class="archive-article-date">
-  <time datetime="2024-02-17T02:52:29.000Z" itemprop="datePublished">02/17</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/des/"
-    >des算法理解及代码实现</a> 
-</h2>
- 
+  <p>关注开源指纹库: <a target="_blank" rel="noopener" href="https://github.com/fingerprintjs/fingerprintjs">fingerprintjs</a></p>
+<h4 id="window-matchMedia"><a href="#window-matchMedia" class="headerlink" title="window.matchMedia"></a>window.matchMedia</h4><p>window.matchMedia() 方法用于检测当前浏览器是否支持某种 CSS 指定的媒体查询。</p>
+<h4 id="canvas指纹"><a href="#canvas指纹" class="headerlink" title="canvas指纹"></a>canvas指纹</h4><p>相同的HTML5 Canvas元素绘制操作，在不同操作系统、不同浏览器上，产生的图片内容不完全相同。在图片格式上，不同浏览器使用了不同的图形处理引擎、不同的图片导出选项、不同的默认压缩级别等。在像素级别来看，操作系统各自使用了不同的设置和算法来进行抗锯齿和子像素渲染操作。即使相同的绘图操作，产生的图片数据的CRC检验也不相同。<br>示例代码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;mycanvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;mycanvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> ctx = canvas.<span class="title function_">getContext</span>(<span class="string">&quot;2d&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> txt = <span class="string">&#x27;qwertyuiop!@#$%^&amp;*()_+&#x27;</span></span><br><span class="line">ctx.<span class="property">textBaseline</span> = <span class="string">&#x27;top&#x27;</span></span><br><span class="line">ctx.<span class="property">font</span> = <span class="string">&#x27;14px \&#x27;Arial\&#x27;&#x27;</span></span><br><span class="line">ctx.<span class="property">textBaseline</span> = <span class="string">&#x27;tencent&#x27;</span></span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;#f60&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillRect</span>(<span class="number">125</span>, <span class="number">1</span>, <span class="number">62</span>, <span class="number">20</span>)</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;#069&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillText</span>(txt, <span class="number">2</span>, <span class="number">15</span>)</span><br><span class="line">ctx.<span class="property">fillStyle</span> = <span class="string">&#x27;rgba(102, 204, 0, 0.7)&#x27;</span></span><br><span class="line">ctx.<span class="title function_">fillText</span>(txt, <span class="number">4</span>, <span class="number">17</span>);</span><br><span class="line"><span class="keyword">const</span> canvasData = canvas.<span class="title function_">toDataURL</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-    </header>
-    
-    
-  </div>
-</article>
+<h4 id="webgl指纹"><a href="#webgl指纹" class="headerlink" title="webgl指纹"></a>webgl指纹</h4><ol>
+<li>WebGL报告——完整的WebGL浏览器报告表是可获取、可被检测的。通过读取报告中的vendor和renderer信息，可以获取到显卡的供应商和型号信息。</li>
+<li>WebGL图像——渲染和转换为哈希值的隐藏3D图像。由于最终结果取决于进行计算的硬件设备，因此此方法会为设备及其驱动程序的不同组合生成唯一值。这种方</li>
+</ol>
+<h4 id="ja3指纹"><a href="#ja3指纹" class="headerlink" title="ja3指纹"></a>ja3指纹</h4><p>Ja3指纹是一种用于识别和追踪SSL&#x2F;TLS加密流量的哈希值。它是通过计算客户端SSL&#x2F;TLS握手期间使用的加密协议参数，包括TLS版本和密码套件等得出的。Ja3指纹的长度为32个16进制数字符（64个字符），可以用于识别加密流量的来源，例如，某个应用程序，某个操作系统，某个设备或者一个独立的网络节点。</p>
+<h4 id="常规检测点"><a href="#常规检测点" class="headerlink" title="常规检测点"></a>常规检测点</h4><ol>
+<li>navigator.webdriver</li>
+<li>navigator.platform(Win32&#x2F;MacOSX&#x2F;Linux)</li>
+<li>navigator.userAgent</li>
+<li>window._phantom</li>
+<li>window.__nightmare</li>
+<li>window._selenium</li>
+<li>window.callPhantom</li>
+<li>window.callSelenium</li>
+<li>window._Selenium_IDE_Recorder</li>
+<li>window.document.__webdriver_evaluate</li>
+<li>window.document.__selenium_evaluate</li>
+<li>window.document.__webdriver_script_function</li>
+<li>window.document.__webdriver_script_func</li>
+<li>window.document.__webdriver_script_fn</li>
+<li>window.document.__fxdriver_evaluate</li>
+<li>window.document.__driver_unwrapped</li>
+<li>window.document.__webdriver_unwrapped</li>
+<li>window.document.__driver_evaluate</li>
+<li>window.document.__selenium_unwrapped</li>
+<li>window.document.__fxdriver_unwrapped</li>
+<li>window.document.documentElement.getAttribute(“selenium”)</li>
+<li>window.document.documentElement.getAttribute(“webdriver”)</li>
+<li>window.document.documentElement.getAttribute(“driver”)</li>
+</ol>
+ 
+      <!-- reward -->
       
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
       
     </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://sullivan.nextcodings.com/2024/js-env-check/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JS%E9%80%86%E5%90%91/" rel="tag">JS逆向</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li></ul>
+
+    </footer>
   </div>
-  
-  
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2024/frida-find-native-method-address/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Frida查找Native函数地址和所属SO模块的方法</div>
+      </a>
+    
+  </nav>
 
   
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -316,6 +378,22 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
 
 <script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
 <link
