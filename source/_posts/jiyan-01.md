@@ -1,5 +1,5 @@
 ---
-title: 某验点选验证码分析(1)
+title: 某验点选验证码分析
 date: 2024-04-02 09:57:55
 tags:
   - 验证码破解
@@ -178,10 +178,10 @@ r参数保存aes密钥, 采用RSA加密后取16进制, i是aes加密数据后采
 ##### 2.1 s参数分析
 ![img.png](images/img49.png)
 ![img.png](images/img51.png)
-关键代码`H(p["$_HD_"](t))`, 其中p["$_HD_"]根据上文分析已知是base64变体算法, t是一个加密的字符串, H函数是标准md5算法.
+关键代码`H(p["$_HD_"](t))`, 其中p["$_HD_"]根据上文分析已知是base64变体算法, t是一个字符串, H函数是标准md5算法.
 ![img.png](images/20240331123103.png)
 ![img.png](images/20240331123147.png)
-`$_BICT`函数用于收集鼠标操作事件并采用base64编码, base64字符映射为"()*,-./0123456789:?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".
+t这个字符串来自`$_BICT`函数生成, `$_BICT`函数用于收集鼠标操作事件并采用base64编码, base64字符映射为"()*,-./0123456789:?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~".
 收集到的鼠标事件信息会进行一系列转换成二进制字符串后进行base64编码, 核心代码如下:
 ```text
 for (var t = [], n = [], r = [], o = [], i = 0, s = e["length"]; i < s; i += 1) {
@@ -202,18 +202,27 @@ n是鼠标事件发生的毫秒级时间戳数组(例如: [1711952404794, 171195
  ["h", H(p["$_HD_"](n))];
 ```
 ![img.png](images/20240401160100.png)
-`i["$_BJDB"]["$_BICT"]`函数作用是检测一个Object对象(该对象为空Object)指定名字的属性是否存在, 存在则返回该属性的值, 不存在则返回-1, 由此组成一个数组并用"magic data"字符串joi拼接这个数组得到. 检测的属性列表如下:
+`i["$_BJDB"]["$_BICT"]`函数作用是检测一个Object对象(该对象为空Object)指定的属性是否存在, 存在则返回该属性的值, 不存在则返回-1, 由此组成一个数组并用"magic data"字符串joi拼接这个数组得到. 检测的属性列表如下:
 ```json
 ["textLength","HTMLLength","documentMode","A","ARTICLE","ASIDE","AUDIO","BASE","BUTTON","CANVAS","CODE","IFRAME","IMG","INPUT","LABEL","LINK","NAV","OBJECT","OL","PICTURE","PRE","SECTION","SELECT","SOURCE","SPAN","STYLE","TABLE","TEXTAREA","VIDEO","screenLeft","screenTop","screenAvailLeft","screenAvailTop","innerWidth","innerHeight","outerWidth","outerHeight","browserLanguage","browserLanguages","systemLanguage","devicePixelRatio","colorDepth","userAgent","cookieEnabled","netEnabled","screenWidth","screenHeight","screenAvailWidth","screenAvailHeight","localStorageEnabled","sessionStorageEnabled","indexedDBEnabled","CPUClass","platform","doNotTrack","timezone","canvas2DFP","canvas3DFP","plugins","maxTouchPoints","flashEnabled","javaEnabled","hardwareConcurrency","jsFonts","timestamp","performanceTiming","internalip","mediaDevices","DIV","P","UL","LI","SCRIPT","touchEvent"]
 ```
 
-##### 2.3 hh参数分析
+##### 2.3 tt参数分析
+```text
+e = i["$_CAAG"]["$_BIBg"]();
+```
+![img.png](images/20240402102553.png)
+tt参数作用是根据服务器返回的c和s参数截取鼠标事件base64编码后的字符串, 可能是用于校验.
+c是一个纯数字字符串, 每两个字符代表一个16进制数字; s是一个数组, 取其中下标0, 2, 4三个数字.
+
+
+##### 2.4 hh参数分析
 ```text
 ["hh", H(n)]
 ```
 hh参数是n的md5值, 跟h参数区别是h参数是base64编码n之后取md5值.
 
-##### 2.4 hi参数分析
+##### 2.5 hi参数分析
 ```text
 var e = t["$_BJDB"]["$_BIBg"]();
 t["$_CCFY"] = e;
@@ -221,9 +230,9 @@ t["$_CCFY"] = e;
 ["hi", H(i["$_CCFY"])]
 ```
 ![img.png](images/20240401162654.png)
-`t["$_BJDB"]["$_BIBg"]`函数的作用与第二点h参数中的n变量的生成相似, 只是组成的数组用"!!"字符串join拼接得到.
+`t["$_BJDB"]["$_BIBg"]`函数的作用与2.2 h参数分析中的n变量的生成相似, 只是组成的数组用"!!"字符串join拼接得到.
 
-##### 2.5 ep参数分析
+##### 2.6 ep参数分析
 ```text
 ["ep", i["$_CEDy"]() || -1]
 ```
@@ -243,8 +252,21 @@ ep参数应该是一些环境检测的汇总数据, 各属性可以在代码中�
 | em                                                                              | 用于检测运行环境中的各种属性, 一般1为表示有该属性, 0表示没有. 其中ph表示_phantom是否在window中; cp表示callPhantom是否在window属性中; ek表示遍历一个TypeError对象的属性列表, 检测的属性列表为["line","column","lineNumber","columnNumber","fileName","message","number","description","sourceURL","stack"], 并用一个二进制数表示, 存在则为1, 否则为0, 例如0000010001, 然后将该二进制数用16进制字符串表示, 例如"11"; wd表示webdriver在window属性中且webdriver为true, nt表示__nightmare是否在window属性中; si表示_webdriverscriptfn是否在document属性中; sc表示$cdc_asdjflasutopfhvcZLmcfl_是否在document属性中 |
 | tm                                                                              | 记录window.performance.timing对象的各属性, a: navigationStart, b: unloadEventStart, c: unloadEventEnd, d: redirectStart, e: redirectEnd, f: fetchStart, g: domainLookupStart, h: domainLookupEnd, i: connectStart, j: connectEnd, k: secureConnectionStart, l: requestStart, m: responseStart, n: responseEnd, o: domLoading, p: domInteractive, q: domContentLoadedEventStart,r: domContentLoadedEventEnd, s: domComplete, t: loadEventStart, u: loadEventEnd                  |
 
-##### 2.6 captcha_token分析
+##### 2.7 captcha_token参数分析
 ![img.png](images/20240402094301.png)
 ![img.png](images/20240402094622.png)
 captcha_token是一个校验值, 分别对n函数, o函数和e变量计算djb hash得到, 其中n函数是计算captcha_token所处的函数, o函数是计算djb hash的函数, e是一个固定值, 如果发现程序进入到开始计算djb hash的过程中执行时间大于100ms则将e变更为"qwe".
 
+##### 2.8 passtime参数分析
+```text
+s = $_Gt() - rt;
+
+["passtime", s || -1]
+```
+passtime记录加载js的时间到现在的毫秒数.
+
+##### 2.9 rp参数分析
+```text
+["rp", H(o["gt"] + o["challenge"] + s)]]
+```
+rp参数是 gt + challenge + passtime的md5值
