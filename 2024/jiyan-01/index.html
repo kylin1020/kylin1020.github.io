@@ -109,12 +109,12 @@
   <p>链接: aHR0cHM6Ly93d3cuYmlsaWJpbGkuY29tLw&#x3D;&#x3D;</p>
 <h3 id="流程分析"><a href="#流程分析" class="headerlink" title="流程分析"></a>流程分析</h3><p>尝试点击页面的登录会触发点选验证码, 随便点几下触发验证流程.<br>从devtools中可以分析得到整个验证码的验证流程如下:</p>
 <ol>
-<li>首先访问<br><a target="_blank" rel="noopener" href="https://passport.bilibili.com/x/passport-login/captcha">https://passport.bilibili.com/x/passport-login/captcha</a> 拿到极验的gt和challenge参数, 用于后续的验证.<br><img src="/images/img_2.png" alt="img_2.png"></li>
-<li>然后根据gt参数访问<br><a target="_blank" rel="noopener" href="https://api.geetest.com/gettype.php">https://api.geetest.com/gettype.php</a> 获取并加载当前版本的js代码.<br><img src="/images/img_3.png" alt="img_3.png"></li>
-<li>访问<br><a target="_blank" rel="noopener" href="https://api.geetest.com/get.php">https://api.geetest.com/get.php</a> 获取一些基本信息, 校验的服务器api地址, c, s参数等, 可以看到访问时带了一个w参数, 暂时不知道生成逻辑.<br><img src="/images/img_7.png" alt="img_7.png"><br><img src="/images/img_6.png" alt="img_6.png"></li>
-<li>访问<br><a target="_blank" rel="noopener" href="https://api.geetest.com/ajax.php">https://api.geetest.com/ajax.php</a> 接口拿到验证码校验类型, 该接口同样有w参数.<br><img src="/images/img_8.png" alt="img_8.png"></li>
+<li>首先访问 <a target="_blank" rel="noopener" href="https://passport.bilibili.com/x/passport-login/captcha">https://passport.bilibili.com/x/passport-login/captcha</a> 拿到极验的gt和challenge参数, 用于后续的验证.<br><img src="/images/img_2.png" alt="img_2.png"></li>
+<li>然后根据gt参数访问 <a target="_blank" rel="noopener" href="https://api.geetest.com/gettype.php">https://api.geetest.com/gettype.php</a> 获取并加载当前版本的js代码.<br><img src="/images/img_3.png" alt="img_3.png"></li>
+<li>访问<a target="_blank" rel="noopener" href="https://api.geetest.com/get.php">https://api.geetest.com/get.php</a> 获取一些基本信息, 校验的服务器api地址, c, s参数等, 可以看到访问时带了一个w参数, 暂时不知道生成逻辑.<br><img src="/images/img_7.png" alt="img_7.png"><br><img src="/images/img_6.png" alt="img_6.png"></li>
+<li>访问 <a target="_blank" rel="noopener" href="https://api.geetest.com/ajax.php">https://api.geetest.com/ajax.php</a> 接口拿到验证码校验类型, 该接口同样有w参数.<br><img src="/images/img_8.png" alt="img_8.png"></li>
 <li>再次访问 <a target="_blank" rel="noopener" href="https://api.geetest.com/get.php">https://api.geetest.com/get.php</a> , 这次请求带上了更多参数, 包括w, 验证码类型, api_server等, 返回的数据也带上了验证码图片和新的c,s参数.<br><img src="/images/img_9.png" alt="img_9.png"><br><img src="/images/img_10.png" alt="img_10.png"></li>
-<li>最后请求<br><a target="_blank" rel="noopener" href="https://api.geetest.com/ajax.php">https://api.geetest.com/ajax.php</a> 校验验证码, 主要参数是gt, challenge和w, 得到验证结果.</li>
+<li>最后请求 <a target="_blank" rel="noopener" href="https://api.geetest.com/ajax.php">https://api.geetest.com/ajax.php</a> 校验验证码, 主要参数是gt, challenge和w, 得到验证结果.</li>
 </ol>
 <p>通过对这个流程分析发现主要参数就是w, 因此要跟踪下三个w参数的请求, 看下各自的w生成逻辑是什么.</p>
 <h3 id="第一次w生成逻辑分析"><a href="#第一次w生成逻辑分析" class="headerlink" title="第一次w生成逻辑分析"></a>第一次w生成逻辑分析</h3><p>通过查看请求的调用栈可以知道第一个w是由fullpage.xxx.js生成的.<br><img src="/images/img_11.png" alt="img_11.png"><br>在请求调用栈上打个断点, 找下w参数在哪里生成.<br><img src="/images/img_12.png" alt="img_12.png"><br>可以看到代码已经经过混淆, 使用ast简单去掉字符串替换和unicode编码, override content之后继续分析.<br><img src="/images/img_13.png" alt="img_13.png"><br>在代码中搜索”w”, 找到5处w的生成逻辑, 5处都打下断点后重新刷新.<br><img src="/images/img_15.png" alt="img_15.png"><br>打下断点再次刷新后停在了其中一处断点, 可以知道第一个w由i+r组成.</p>
